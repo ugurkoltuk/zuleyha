@@ -97,7 +97,9 @@ def register(hostname, username):
 	if hostname is None or username is None:
 		return
 	add_authorized_key = "mkdir -p .ssh && cat >> .ssh/authorized_keys"
-		
+	if not os.path.exists(os.path.expanduser('~/.ssh/id_rsa.pub')):
+		os.system('ssh-keygen -t rsa')	
+	
 	with open(os.path.expanduser("~/.ssh/id_rsa.pub")) as ssh_pub_file:
 		p = subprocess.Popen(["ssh", "{0}@{1}".format(username, hostname), add_authorized_key], stdin=ssh_pub_file)
 		result = p.wait() #catch return code
