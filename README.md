@@ -7,6 +7,7 @@ To run (at least in a virtualenv - which is what I always do)
 cd zuleyha #(which is the project root)
 virtualenv venv
 . venv/bin/activate
+pip install .
 cd zuleyha # (now it should be zuleyha/zuleyha)
 export FLASK_APP=zuleyha
 flask register --hostname <host_name> --username <user_name>
