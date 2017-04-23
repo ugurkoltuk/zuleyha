@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Load Report Viewer</title>
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}">
+
+	<!-- jQuery library -->
+	<script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script>
+		function reload(){
+			$.ajax({
+				url: "/main-container",
+				cache: false,
+				success: function(data) { $("#main-container").html(data); } 
+			});
+		}
+ 
+		$(document).ready(function(){
+			setInterval(reload, 20000);
+		});
+	</script>
+
+	</head>
+	<body>
+  {% block body %}{% endblock %}
+	</body>
+	
+</html>
+

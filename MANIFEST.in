@@ -1,0 +1,3 @@
+graft zuleyha/templates
+graft zuleyha/static
+include slaves.json

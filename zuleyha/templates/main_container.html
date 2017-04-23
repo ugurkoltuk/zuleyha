@@ -1,0 +1,44 @@
+<div class="container-fluid" id="main-container">
+  <h1>Load Report Viewer - A total of {{ all_hosts|length }} systems are being monitored.</h1>
+  {% for host in all_hosts %}
+	{% if loop.index is divisibleby(2) %}
+		<div class="row">
+	{% endif %}
+		{% if host.load|float > 4 %}
+			{% set host_state = 'bg-danger' %} 
+		{% elif host.load|float > 2 %}
+			{%set host_state = 'bg-warning' %}
+		{% endif %}
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+			<h2 class="{{ host_state }}">'{{ host.hostname }}' ({{host.processor_count}} cores) Load Average: {{ '%0.2f' % host.load|float }} </h2>
+			<table class="table table-hover">
+				{% for row in host.process_table %}
+					{% if loop.index == 1 %}
+				<thead>
+					{% elif loop.index == 2 %}
+				<tbody>
+					{% endif %}
+					<tr>
+						{% for col in row %}
+							{% if ((loop.index == 2) or (loop.index == 3)) %}
+								{% if col|float > 50.0 %}
+									{% set style = 'danger' %}
+								{% elif col|float > 25.0 %}
+									{% set style = 'warning' %}
+								{% endif %}
+							{% endif %}
+							<td class="{{ style }} "> {{ col }} </td>
+						{% endfor %}
+					</tr>
+					{% if loop.index == 1 %}
+				</thead>
+					{% endif %}
+				{% endfor %}
+				</tbody>
+			</table>
+		</div> <!-- col -->
+	{% if loop.index is divisibleby(2) %}
+		</div> <!-- row -->
+	{% endif %}
+  {% endfor %}
+</div>
