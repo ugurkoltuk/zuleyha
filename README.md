@@ -1,19 +1,27 @@
 # zuleyha
 a simple web application to watch how's it going with computers that are registered
+(why not SNMP? well, i made this for fun.)
 
-To run (at least in a virtualenv - which is what I always do) 
+It requres python3.
 
+To run, first you should register some slave machines. 
+
+
+e.g.:
 ```
-cd zuleyha #(which is the project root)
-virtualenv venv
-. venv/bin/activate
-pip install .
-cd zuleyha # (now it should be zuleyha/zuleyha)
-export FLASK_APP=zuleyha
-flask register --hostname <host_name> --username <user_name>
-flask run
+python zuleyha.py -r localhost ugurkoltuk
 ```
 
-This initial version only runs locally and I only tested it with virtualenv. 
-It also only reports average load (via /proc/loadavg) and top 5 cpu hungry processes.
-It is unknown whether I'll continue working on this or not. 
+to run,
+
+
+```
+python zuleyha.py
+```
+
+It is unknown whether I'll continue working on this or not.
+
+KNOWN ISSUES:
+cpu percentage that's printed comes from ps, it is not "how many percent of the CPU is 
+used by the process" but rather "how many percent of its lifetime was spent using CPU by this process"
+I will (maybe) fix it.

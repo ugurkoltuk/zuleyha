@@ -7,11 +7,13 @@
 		{% if host.load|float > 4 %}
 			{% set host_state = 'bg-danger' %} 
 		{% elif host.load|float > 2 %}
-			{%set host_state = 'bg-warning' %}
+			{% set host_state = 'bg-warning' %}
+		{% else %}
+			{% set host_state = ' ' %}
 		{% endif %}
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-			<h2 class="{{ host_state }}">'{{ host.hostname }}' ({{host.processor_count}} cores) Load Average: {{ '%0.2f' % host.load|float }} </h2>
-			<table class="table table-hover">
+			<h3 class="{{ host_state }}">{{ host.hostname }} ({{host.processor_count}} cores) Load Avg: {{ '%0.2f' % host.load|float }} </h3>
+			<table class="table table-hover table-responsive">
 				{% for row in host.process_table %}
 					{% if loop.index == 1 %}
 				<thead>
@@ -25,7 +27,11 @@
 									{% set style = 'danger' %}
 								{% elif col|float > 25.0 %}
 									{% set style = 'warning' %}
+								{% else %}
+									{% set state = ' ' %}
 								{% endif %}
+							{% else %}
+								{% set state = ' ' %}
 							{% endif %}
 							<td class="{{ style }} "> {{ col }} </td>
 						{% endfor %}
