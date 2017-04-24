@@ -16,8 +16,8 @@ args_parser.add_argument('-r', '--register', dest='slave_info', nargs=2,
 
 args = args_parser.parse_args()
 
-def render(tpl_path, all_hosts):
-	path, filename = os.path.split(tpl_path)
+def render(template, all_hosts):
+	path, filename = os.path.split(template)
 	return jinja2.Environment(
 		loader=jinja2.FileSystemLoader(path or './')
 	).get_template(filename).render(all_hosts=all_hosts)
@@ -95,15 +95,8 @@ def show_main_container():
 def show_load():	
 	return render('show_load.html', all_hosts=get_host_status())
 
-# HTTPRequestHandler class
-class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
-	# GET
+class RequestHandler(BaseHTTPRequestHandler):
 	def do_GET(self):
-		# Send response status code
-
-		print (self.path)
- 
-		message = " SOME ERROR HAPPENED " 
 		# Send message back to client
 		if self.path == '/':
 			self.send_response(200)
@@ -134,19 +127,14 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 		else:
 			self.send_response(404)	
 			return
-		# Write content as utf-8 data
+		
 		self.wfile.write(bytes(message, "utf8"))
 		return
 
 def run():
-	print('starting server...')
- 
-	# Server settings
-	# Choose port 8080, for port 80, which is normally used for a http server, you need root access
-	server_address = ('127.0.0.1', 8080)
-	httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
+	server = HTTPServer(('127.0.0.1', 8080), RequestHandler)
 	print('running server on port 8080')
-	httpd.serve_forever()
+	server.serve_forever()
 
 def register(hostname, username):
 	if hostname is None or username is None:
