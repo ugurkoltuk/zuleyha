@@ -97,33 +97,29 @@ def show_load():
 
 class RequestHandler(BaseHTTPRequestHandler):
 	def do_GET(self):
-		# Send message back to client
+		
 		if self.path == '/':
 			self.send_response(200)
-			# Send headers
 			self.send_header('Content-type','text/html')
 			self.end_headers()
 			message = show_load()
 		elif self.path.startswith('/main-container'):
 			self.send_response(200)
-			# Send headers
 			self.send_header('Content-type','text/html')
 			self.end_headers()
 			message = show_main_container()	
 		elif self.path.endswith(".css"):
-			with open(self.path[1:]) as f:
-				self.send_response(200)
+			with open(self.path[1:]) as cssfile:
 				self.send_response(200)
 				self.send_header('Content-type', 'text/css')
 				self.end_headers()
-				message = f.read()
+				message = cssfile.read()
 		elif self.path.endswith(".js"):
-			with open(self.path[1:]) as f:
-				self.send_response(200)
+			with open(self.path[1:]) as jsfile:
 				self.send_response(200)
 				self.send_header('Content-type', 'application/javascript')
 				self.end_headers()
-				message = f.read()
+				message = jsfile.read()
 		else:
 			self.send_response(404)	
 			return
