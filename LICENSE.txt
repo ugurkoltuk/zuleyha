@@ -1,0 +1,3 @@
+The code that I wrote is GPL v3 licensed. I used bootstrap, which is MIT licensed and a skin called Flatly, that's also MIT licensed (on top of bootstrap)
+
+jQuery is jQuery licensed? I don't know but it has some license. Go see it. I used it in this project.

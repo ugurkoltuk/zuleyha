@@ -54,7 +54,8 @@ def get_host_status():
 
 	for slave in slaves_list:
 		slave_connection_string = "{0}@{1}".format(slave["username"], slave["hostname"])
-		get_top_processes = "ps -eo pid,%cpu,%mem,ni,time,uname,comm --sort -%cpu | head -n {0}".format(max_processes + 1) 
+		#get_top_processes = "ps -eo pid,%cpu,%mem,ni,time,uname,comm --sort -%cpu | head -n {0}".format(max_processes + 1) 
+		get_top_processes = "top -bn1 | tail -n+7 | head -n{0} | grep -v top | head -n{1}".format(max_processes + 2, max_processes + 1)
 		get_system_load = "cat /proc/loadavg | awk '{print $1}' | sed 's/,$//'"
 		get_processor_count = "cat /proc/cpuinfo | grep ^processor | wc -l"
 
@@ -76,15 +77,18 @@ def get_host_status():
 			continue
 		processor_count = stdout.decode("unicode_escape")
 
-		try: 
-			hostname = "%s(%s)" % (slave["hostname"], socket.gethostbyaddr(slave["hostname"])[0])
+		hostname = slave["hostname"]
+		try:
+			dnsname = socket.gethostbyaddr(hostname)[0]
+			if hostname != dnsname:
+				hostname = "%s(%s)" % (hostname, dnsname)
 		except:
-			hostname = slave["hostname"]
-		
+			pass
+	
 		all_hosts.append( { "hostname" : hostname, 
 							#TODO: Fix according to LOCALE
 							"load" : system_load.replace(',', '.'),
-							"process_table" : [[field for field in line.split()] for line in top_processes],
+							"process_table" : [[field.replace(',', '.') for field in line.split()] for line in top_processes],
 							"processor_count" : processor_count
 						 } )
 	return all_hosts
@@ -128,7 +132,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 		return
 
 def run():
-	server = HTTPServer(('127.0.0.1', 8080), RequestHandler)
+	server = HTTPServer(('0.0.0.0', 8080), RequestHandler)
 	print('running server on port 8080')
 	server.serve_forever()
 

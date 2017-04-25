@@ -1,50 +1,77 @@
-<div class="container-fluid" id="main-container">
-  <h1>Load Report Viewer - A total of {{ all_hosts|length }} systems are being monitored.</h1>
+	<div class="row">
+		<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+			<h1>Load Report Viewer - A total of {{ all_hosts|length }} systems are being monitored.</h1> 
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Legend: 
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-lg-4 col-md-12 col-sm-4 col-xs-4">
+							<span class="label label-danger">About to catch fire!</span>
+						</div>
+						<div class="col-lg-4 col-md-12 col-sm-4 col-xs-4">
+							<span class="label label-warning">Maybe take a look.</span>
+						</div>
+						<div class="col-lg-4 col-md-12 col-sm-4 col-xs-4">
+							<span class="label label-success">Boooring!</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
   {% for host in all_hosts %}
-	{% if loop.index is divisibleby(2) %}
+	{% if loop.index0 % 2 == 0 %}
 		<div class="row">
 	{% endif %}
 		{% if host.load|float > 4 %}
-			{% set host_state = 'bg-danger' %} 
+			{% set host_state = 'danger' %} 
 		{% elif host.load|float > 2 %}
-			{% set host_state = 'bg-warning' %}
+			{% set host_state = 'warning' %}
 		{% else %}
-			{% set host_state = ' ' %}
+			{% set host_state = 'success' %}
 		{% endif %}
-		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-			<h3 class="{{ host_state }}">{{ host.hostname }} ({{host.processor_count}} cores) Load Avg: {{ '%0.2f' % host.load|float }} </h3>
-			<table class="table table-hover table-responsive">
-				{% for row in host.process_table %}
-					{% if loop.index == 1 %}
-				<thead>
-					{% elif loop.index == 2 %}
-				<tbody>
-					{% endif %}
-					<tr>
-						{% for col in row %}
-							{% if ((loop.index == 2) or (loop.index == 3)) %}
-								{% if col|float > 50.0 %}
-									{% set style = 'danger' %}
-								{% elif col|float > 25.0 %}
-									{% set style = 'warning' %}
-								{% else %}
-									{% set state = ' ' %}
+		<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+			<div class="panel panel-{{ host_state }}">
+			<div class="panel-heading">
+				<h2> {{ host.hostname }} ({{ host.processor_count }} cores) </h2>  
+			</div>
+			<div class="panel-body">
+				Load Average: <span class=" text-{{ host_state }} ">{{ '%0.2f' % host.load|float }}</span>
+				<table class="table table-hover table-responsive">
+					{% for row in host.process_table %}
+						{% if loop.index0 == 0 %}
+					<thead>
+						{% elif loop.index0 == 1 %}
+					<tbody>
+						{% endif %}
+						{% if (row[8]|float >= (50 * host.processor_count|float)) or (row[9]|float >= 50) %}
+							{% set row_style = 'danger' %}
+						{% elif (row[8]|float >= (25 * host.processor_count|float)) or (row[9]|float >= 25) %}
+							{% set row_style = 'warning' %}
+						{% else %}
+							{% set row_style = ' ' %}
+						{% endif %}
+						<tr class = "{{ row_style }}">
+							{% for col in row %}
+								{% if (loop.index0 != 2) and (loop.index0 != 4) and (loop.index0 != 5) and (loop.index0 != 6) and (loop.index0 != 7) %}
+								<td> {{ col }} </td>
 								{% endif %}
-							{% else %}
-								{% set state = ' ' %}
-							{% endif %}
-							<td class="{{ style }} "> {{ col }} </td>
-						{% endfor %}
-					</tr>
-					{% if loop.index == 1 %}
-				</thead>
-					{% endif %}
-				{% endfor %}
-				</tbody>
-			</table>
+							{% endfor %}
+						</tr>
+						{% if loop.index == 1 %}
+					</thead>
+						{% endif %}
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			</div>
 		</div> <!-- col -->
-	{% if loop.index is divisibleby(2) %}
+	{% if loop.index0 % 2 == 1 %}
 		</div> <!-- row -->
 	{% endif %}
   {% endfor %}
-</div>
