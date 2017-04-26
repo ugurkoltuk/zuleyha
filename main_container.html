@@ -1,11 +1,11 @@
 	<div class="row">
 		<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-			<h2>Load Report Viewer - {{ all_hosts|length }} systems are being monitored.</h2> 
+			<h2>Load Report Viewer - {{ all_hosts|length }} systems are being monitored.</h2>
 		</div>
 		<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					Legend: 
+					Legend:
 				</div>
 				<div class="panel-body">
 					<div class="row">
@@ -28,7 +28,7 @@
 		<div class="row">
 	{% endif %}
 		{% if host.load|float > 4 %}
-			{% set host_state = 'danger' %} 
+			{% set host_state = 'danger' %}
 		{% elif host.load|float > 2 %}
 			{% set host_state = 'warning' %}
 		{% else %}
@@ -36,40 +36,81 @@
 		{% endif %}
 		<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 			<div class="panel panel-{{ host_state }}">
-			<div class="panel-heading">
-				<strong> {{ host.hostname }} ({{ host.processor_count }} cores) </strong>  
-			</div>
-			<div class="panel-body">
-				Load Average: <span class=" text-{{ host_state }} ">{{ '%0.2f' % host.load|float }}</span>
-				<table class="table table-hover table-responsive table-condensed">
-					{% for row in host.process_table %}
-						{% if loop.index0 == 0 %}
-					<thead>
-						{% elif loop.index0 == 1 %}
-					<tbody>
-						{% endif %}
-						{% if (row[8]|float >= (50 * host.processor_count|float)) or (row[9]|float >= 50) %}
-							{% set row_style = 'danger' %}
-						{% elif (row[8]|float >= (25 * host.processor_count|float)) or (row[9]|float >= 25) %}
-							{% set row_style = 'warning' %}
-						{% else %}
-							{% set row_style = ' ' %}
-						{% endif %}
-						<tr class = "{{ row_style }}">
-							{% for col in row %}
-								{% if (loop.index0 != 2) and (loop.index0 != 4) and (loop.index0 != 5) and (loop.index0 != 6) and (loop.index0 != 7) %}
-								<td> {{ col }} </td>
-								{% endif %}
-							{% endfor %}
-						</tr>
-						{% if loop.index == 1 %}
-					</thead>
-						{% endif %}
+				<div class="panel-heading">
+					<strong> {{ host.hostname }} ({{ host.processor_count }} cores) </strong>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="row">
+								<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+									<h5>Load Average:</h5>
+								</div>
+								<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+									<h5> <span class=" text-{{ host_state }} ">{{ '%0.2f' % host.load|float }}</span> </h5>
+								</div>
+							</div>
+						</div> <!-- row of average load -->
+					</div>
+					{% for partition in host.disk_usage %}
+					{% if partition[1]|float > 80 %}
+						{% set partition_status = 'danger' %}
+					{% elif partition[1]|float > 50 %}
+						{% set partition_status = 'warning' %}
+					{% else %}
+						{% set partition_status = 'success' %}
+					{% endif %}
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="row" style="display:flex; align-items:center;"> <!-- a dirty hack for this row. normally css should go in css files :( -->
+								<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+									<h5> Partition {{ partition[0] }} :</h5>
+								</div>
+								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+									<div class="progress" style="margin:0;"> <!-- a dirty hack for this progress bar just to keep it vertically centered in the column :( -->
+  									<div class="progress-bar progress-bar-{{ partition_status }}" style="width: {{partition[1]}}%"></div>
+									</div>
+								</div>
+								<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+									<h5><span class="text-{{ partition_status }}"> {{ partition[1] }}% full. </span></h5>
+								</div>
+							</div> <!-- percentage row -->
+						</div>
+					</div><!-- row of a partition-->
 					{% endfor %}
-					</tbody>
-				</table>
-			</div>
-			</div>
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<table class="table table-hover table-responsive table-condensed">
+								{% for row in host.process_table %}
+									{% if loop.index0 == 0 %}
+								<thead>
+									{% elif loop.index0 == 1 %}
+								<tbody>
+									{% endif %}
+									{% if (row[8]|float >= (50 * host.processor_count|float)) or (row[9]|float >= 50) %}
+										{% set row_style = 'danger' %}
+									{% elif (row[8]|float >= (25 * host.processor_count|float)) or (row[9]|float >= 25) %}
+										{% set row_style = 'warning' %}
+									{% else %}
+										{% set row_style = ' ' %}
+									{% endif %}
+									<tr class = "{{ row_style }}">
+										{% for col in row %}
+											{% if (loop.index0 != 2) and (loop.index0 != 4) and (loop.index0 != 5) and (loop.index0 != 6) and (loop.index0 != 7) %}
+											<td> {{ col }} </td>
+											{% endif %}
+										{% endfor %}
+									</tr>
+									{% if loop.index == 1 %}
+								</thead>
+									{% endif %}
+								{% endfor %}
+								</tbody>
+							</table>
+						</div> <!-- col -->
+					</div> <!--row -->
+				</div> <!-- panel-body -->
+			</div> <!-- panel -->
 		</div> <!-- col -->
 	{% if loop.index0 % 2 == 1 %}
 		</div> <!-- row -->
