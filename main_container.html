@@ -41,17 +41,18 @@
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<div class="row">
-								<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-									<h5>Load Average:</h5>
-								</div>
-								<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-									<h5> <span class=" text-{{ host_state }} ">{{ '%0.2f' % host.load|float }}</span> </h5>
-								</div>
-							</div>
-						</div> <!-- row of average load -->
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+							Load Average:
+						</div>
+						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+							<span class=" text-{{ host_state }} ">{{ '%0.2f' % host.load|float }}</span>
+						</div>
 					</div>
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							Partitions usage status:
+						</div>
+			  	</div>
 					{% for partition in host.disk_usage %}
 					{% if partition[1]|float > 80 %}
 						{% set partition_status = 'danger' %}
@@ -60,21 +61,17 @@
 					{% else %}
 						{% set partition_status = 'success' %}
 					{% endif %}
-					<div class="row">
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<div class="row" style="display:flex; align-items:center;"> <!-- a dirty hack for this row. normally css should go in css files :( -->
-								<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-									<h5> Partition {{ partition[0] }} :</h5>
-								</div>
-								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-									<div class="progress" style="margin:0;"> <!-- a dirty hack for this progress bar just to keep it vertically centered in the column :( -->
-  									<div class="progress-bar progress-bar-{{ partition_status }}" style="width: {{partition[1]}}%"></div>
-									</div>
-								</div>
-								<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-									<h5><span class="text-{{ partition_status }}"> {{ partition[1] }}% full. </span></h5>
-								</div>
-							</div> <!-- percentage row -->
+					<div class="row" style="display:flex; align-items:center;"> <!-- a dirty hack for this row from stackoverflow. normally css should go in css files :( -->
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+							{{ partition[0][1:-1] }}
+						</div>
+						<div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+							<div class="progress" style="margin:0;"> <!-- a dirty hack for this progress bar just to keep it vertically centered in the column :( -->
+								<div class="progress-bar progress-bar-{{ partition_status }}" style="width: {{partition[1]}}%"></div>
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+							<span class="text-{{ partition_status }}"> {{ partition[1] }}% full. </span>
 						</div>
 					</div><!-- row of a partition-->
 					{% endfor %}
