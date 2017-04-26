@@ -42,15 +42,15 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-							Load Average:
+							<strong>Load Average:</strong>
 						</div>
-						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-							<span class=" text-{{ host_state }} ">{{ '%0.2f' % host.load|float }}</span>
-						</div>
+							<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+								<span class=" text-{{ host_state }} ">{{ '%0.2f' % host.load|float }}</span>
+							</div>
 					</div>
 					<div class="row">
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							Partitions usage status:
+							<strong>Partitions usage status:</strong>
 						</div>
 			  	</div>
 					{% for partition in host.disk_usage %}
@@ -61,16 +61,16 @@
 					{% else %}
 						{% set partition_status = 'success' %}
 					{% endif %}
-					<div class="row" style="display:flex; align-items:center;"> <!-- a dirty hack for this row from stackoverflow. normally css should go in css files :( -->
-						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					<div class="row" style=" align-items:center;">
+						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 							{{ partition[0][1:-1] }}
 						</div>
 						<div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
-							<div class="progress" style="margin:0;"> <!-- a dirty hack for this progress bar just to keep it vertically centered in the column :( -->
+							<div class="progress" style="margin:0px;"> <!-- a dirty hack for this progress bar just to keep it vertically centered in the column :( -->
 								<div class="progress-bar progress-bar-{{ partition_status }}" style="width: {{partition[1]}}%"></div>
 							</div>
 						</div>
-						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<div class="col-lg-2 col-md-2 col-sm-5 col-xs-5">
 							<span class="text-{{ partition_status }}"> {{ partition[1] }}% full. </span>
 						</div>
 					</div><!-- row of a partition-->
@@ -79,7 +79,9 @@
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<table class="table table-hover table-responsive table-condensed">
 								{% for row in host.process_table %}
+								{% set table_element_tag = "td" %}
 									{% if loop.index0 == 0 %}
+										{% set table_element_tag = "th" %}
 								<thead>
 									{% elif loop.index0 == 1 %}
 								<tbody>
@@ -94,7 +96,7 @@
 									<tr class = "{{ row_style }}">
 										{% for col in row %}
 											{% if (loop.index0 != 2) and (loop.index0 != 4) and (loop.index0 != 5) and (loop.index0 != 6) and (loop.index0 != 7) %}
-											<td> {{ col }} </td>
+											<{{ table_element_tag}}> {{ col }} </{{ table_element_tag }}>
 											{% endif %}
 										{% endfor %}
 									</tr>
