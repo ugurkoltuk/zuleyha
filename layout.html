@@ -13,23 +13,52 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script>
-		function reload(){
+		var remaining;
+		var remainingTimeout;
+
+		function reload() {
 			$.ajax({
 				url: "/main-container",
 				cache: false,
-				success: function(data) { $("#main-container").html(data); } 
+				success: function(data) {
+					clearTimeout(remainingTimeout);
+					$("#main-container").html(data);
+					remaining = 20;
+					update_remaining();
+				}
 			});
 		}
- 
+
+		function update_remaining() {
+			if (remaining == 1) {
+				document.getElementById('pre-remaining').innerHTML = "any time now.";
+				document.getElementById('remaining').innerHTML = "";
+				document.getElementById('post-remaining').innerHTML = "";
+				return;
+			}
+			remaining--;
+			document.getElementById('pre-remaining').innerHTML = " in about ";
+			document.getElementById('remaining').innerHTML = remaining;
+			document.getElementById('post-remaining').innerHTML = " s";
+			remainingTimeout = setTimeout(update_remaining, 1000);
+		}
+
 		$(document).ready(function(){
 			setInterval(reload, 20000);
+			remaining = 20;
+			update_remaining();
 		});
+
 	</script>
+	<style>
+		.top_spacing { margin-top:8px;}
+		.top_spacing_2 { margin-top:16px;}
+		td {word-break:break-all;}
+	</style>
 
 	</head>
 	<body>
   {% block body %}{% endblock %}
 	</body>
-	
-</html>
 
+</html>
