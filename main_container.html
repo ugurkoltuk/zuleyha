@@ -72,40 +72,36 @@
 						</div>
 					</div><!-- row of a partition-->
 					{% endfor %}
-					<div class="row top_spacing_2">
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<table class="table table-hover table-responsive table-condensed">
-								{% for row in host.process_table %}
-								{% set table_element_tag = "td" %}
-									{% if loop.index0 == 0 %}
-										{% set table_element_tag = "th" %}
-								<thead>
-									{% elif loop.index0 == 1 %}
-								<tbody>
-									{% endif %}
-									{% if (row[8]|float >= (50 * host.processor_count|float)) or (row[9]|float >= 50) %}
-										{% set row_style = 'danger' %}
-									{% elif (row[8]|float >= (25 * host.processor_count|float)) or (row[9]|float >= 25) %}
-										{% set row_style = 'warning' %}
-									{% else %}
-										{% set row_style = ' ' %}
-									{% endif %}
-									<tr class = "{{ row_style }}">
-										{% for col in row %}
-											{% if (loop.index0 != 2) and (loop.index0 != 4) and (loop.index0 != 5) and (loop.index0 != 6) and (loop.index0 != 7) %}
-											<{{ table_element_tag}}> {{ col }} </{{ table_element_tag }}>
-											{% endif %}
-										{% endfor %}
-									</tr>
-									{% if loop.index == 1 %}
-								</thead>
-									{% endif %}
-								{% endfor %}
-								</tbody>
-							</table>
-						</div> <!-- col -->
-					</div> <!--row -->
-				</div> <!-- panel-body -->
+				</div>
+				<table class="table table-hover table-responsive table-condensed">
+					{% for row in host.process_table %}
+					{% set table_element_tag = "td" %}
+						{% if loop.index0 == 0 %}
+							{% set table_element_tag = "th" %}
+					<thead>
+						{% elif loop.index0 == 1 %}
+					<tbody>
+						{% endif %}
+						{% if (row[8]|float >= (50 * host.processor_count|float)) or (row[9]|float >= 50) %}
+							{% set row_style = 'danger' %}
+						{% elif (row[8]|float >= (25 * host.processor_count|float)) or (row[9]|float >= 25) %}
+							{% set row_style = 'warning' %}
+						{% else %}
+							{% set row_style = ' ' %}
+						{% endif %}
+						<tr class = "{{ row_style }}">
+							{% for col in row %}
+								{% if (loop.index0 != 2) and (loop.index0 != 4) and (loop.index0 != 5) and (loop.index0 != 6) and (loop.index0 != 7) %}
+								<{{ table_element_tag}}> {{ col }} </{{ table_element_tag }}>
+								{% endif %}
+							{% endfor %}
+						</tr>
+						{% if loop.index == 1 %}
+					</thead>
+						{% endif %}
+					{% endfor %}
+					</tbody>
+				</table>
 			</div> <!-- panel -->
 		</div> <!-- col -->
 	{% if loop.index0 % 2 == 1 %}
