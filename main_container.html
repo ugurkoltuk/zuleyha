@@ -1,13 +1,12 @@
 	<div class="row">
 		<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-			<h2>Load Report Viewer - {{ all_hosts|length }} systems are being monitored.</h2>
-			Will update <span id="pre-remaining"> in about </span> <span id="remaining">20</span> <span id="post-remaining"> s</span>
+			<div class="page-header">
+				<h2>Load Report Viewer - {{ all_hosts|length }} systems are being monitored.</h2>
+			</div>
 		</div>
-		<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+		<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 text-right">
+			<p class="top_spacing">Will update <span id="pre-remaining"> in about </span> <span id="remaining">20</span> <span id="post-remaining"> s</span></p>
 			<div class="panel panel-default">
-				<div class="panel-heading">
-					Legend:
-				</div>
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-lg-4 col-md-12 col-sm-4 col-xs-4">
@@ -66,13 +65,10 @@
 						<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
 							{{ partition[0][1:-1] }}
 						</div>
-						<div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
-							<div class="progress" style="margin:0px;"> <!-- a dirty hack for this progress bar just to keep it vertically centered in the column :( -->
-								<div class="progress-bar progress-bar-{{ partition_status }}" style="width: {{partition[1]}}%"></div>
+						<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+							<div class="progress">
+								<div class="progress-bar progress-bar-{{ partition_status }}" style="width: {{partition[1]}}%">{{ partition[1] }}%</div>
 							</div>
-						</div>
-						<div class="col-lg-2 col-md-5 col-sm-5 col-xs-5">
-							<span class="text-{{ partition_status }}"> {{ partition[1] }}% full. </span>
 						</div>
 					</div><!-- row of a partition-->
 					{% endfor %}

@@ -1,67 +1,85 @@
 <!doctype html>
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>Load Report Viewer</title>
-	<link rel=stylesheet type=text/css href="bootstrap.min.css">
+	<head>
+		<meta charset="utf-8" />
+		<title>Load Report Viewer</title>
+		<link rel=stylesheet type=text/css href="bootstrap.min.css" />
 
-	<!-- jQuery library -->
-	<script src="jquery.min.js"></script>
+		<!-- jQuery library -->
+		<script src="jquery.min.js"></script>
 
-	<!-- Latest compiled JavaScript -->
-	<script src="bootstrap.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="bootstrap.min.js"></script>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script>
-		var remaining;
-		var remainingTimeout;
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script>
+			var remaining;
+			var remainingTimeout;
 
-		function reload() {
-			$.ajax({
-				url: "/main-container",
-				cache: false,
-				success: function(data) {
-					clearTimeout(remainingTimeout);
-					$("#main-container").html(data);
-					remaining = 20;
-					update_remaining();
-				}
-			});
-		}
-
-		function update_remaining() {
-			remaining--;
-			if (remaining <= 0) {
-				$('#pre-remaining').html("any time now.");
-				if (remaining < 0) {
-					$('#remaining').html("(delayed by " + (-remaining));
-					$('#post-remaining').html("s)");
-				}
-				else {
-					$('#remaining').html("");
-					$('#post-remaining').html("");
-				}
-			} else {
-				$('#pre-remaining').html(" in about ");
-				$('#remaining').html(remaining);
-				$('#post-remaining').html(" s");
+			function reload() {
+				$.ajax({
+					url: "/main-container",
+					cache: false,
+					success: function(data) {
+						clearTimeout(remainingTimeout);
+						$("#main-container").html(data);
+						remaining = 20;
+						update_remaining();
+					}
+				});
 			}
-			remainingTimeout = setTimeout(update_remaining, 1000);
-		}
 
-		$(document).ready(function(){
-			setInterval(reload, 20000);
-			remaining = 20;
-			update_remaining();
-		});
+			function update_remaining() {
+				remaining--;
+				if (remaining <= 0) {
+					$('#pre-remaining').html("any time now.");
+					if (remaining < 0) {
+						$('#remaining').html("(delayed by " + (-remaining));
+						$('#post-remaining').html("s)");
+					}
+					else {
+						$('#remaining').html("");
+						$('#post-remaining').html("");
+					}
+				} else {
+					$('#pre-remaining').html(" in about ");
+					$('#remaining').html(remaining);
+					$('#post-remaining').html(" s");
+				}
+				remainingTimeout = setTimeout(update_remaining, 1000);
+			}
 
-	</script>
-	<style>
-		.top_spacing { margin-top:8px;}
-		.top_spacing_2 { margin-top:16px;}
+			$(document).ready(function(){
+				setInterval(reload, 20000);
+				remaining = 20;
+				update_remaining();
+			});
+
+		</script>
+		<!-- giving space from top when necessary  - like before process table or partition rows-->
+		<style>
+			.top_spacing { margin-top:8px;}
+			.top_spacing_2 { margin-top:16px;}
+
+		</style>
+
+		<!-- make sure process table is displayed correctly with small screen size. -->
+		<style>
 		td {word-break:break-all;}
-	</style>
+		</style>
 
+		<!-- so that progress bars aren't so thin ( I don't know why they are.)
+		 			not sure if using px as a unit is good idea in 2017 unless you know
+					what you are doing and I for sure don't. -->
+		<style>
+			.progress .progress-bar {
+				font-size: 15px;
+				padding-top: 4px;
+			}
+			.progress {
+				height: 20px;
+			}
+		</style>
 	</head>
 	<body>
   {% block body %}{% endblock %}
