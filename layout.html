@@ -32,19 +32,19 @@
 		function update_remaining() {
 			remaining--;
 			if (remaining <= 0) {
-				document.getElementById('pre-remaining').innerHTML = "any time now.";
+				$('#pre-remaining').html("any time now.");
 				if (remaining < 0) {
-					document.getElementById('remaining').innerHTML = "(delayed by " + (-remaining);
-					document.getElementById('post-remaining').innerHTML = "s)";
+					$('#remaining').html("(delayed by " + (-remaining));
+					$('#post-remaining').html("s)");
 				}
 				else {
-					document.getElementById('remaining').innerHTML = "";
-					document.getElementById('post-remaining').innerHTML = "";
+					$('#remaining').html("");
+					$('#post-remaining').html("");
 				}
 			} else {
-				document.getElementById('pre-remaining').innerHTML = " in about ";
-				document.getElementById('remaining').innerHTML = remaining;
-				document.getElementById('post-remaining').innerHTML = " s";
+				$('#pre-remaining').html(" in about ");
+				$('#remaining').html(remaining);
+				$('#post-remaining').html(" s");
 			}
 			remainingTimeout = setTimeout(update_remaining, 1000);
 		}
