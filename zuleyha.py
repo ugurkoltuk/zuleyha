@@ -50,14 +50,23 @@ def get_host_status():
 
 	slaves_list=read_slave_list(slave_db)
 
-	max_processes=5
+	max_processes=3
 
 	for slave in slaves_list:
 		slave_connection_string = "{0}@{1}".format(slave["username"], slave["hostname"])
 		get_top_processes = "top -bn1 | tail -n+7 | head -n{0} | grep -v top | head -n{1}".format(max_processes + 2, max_processes + 1)
 		get_system_load = "cat /proc/loadavg | awk '{print $1}' | sed 's/,$//'"
 		get_processor_count = "cat /proc/cpuinfo | grep ^processor | wc -l"
-		get_disk_usage = 'df -h | grep \'^/dev\' | grep -v \'/boot$\' | awk \'{print "\\""$6"\\"" " " $5}\' | sed \'s/%//\''
+		get_disk_usage = 'df -P | column -t | grep \'^/dev\' | grep -Ev \'\/boot(\/efi)?$\' | awk \'{print "\\""$6"\\"" " " $5}\' | sed \'s/%//\''
+
+		p = subprocess.Popen(["ping", slave["hostname"], "-c", "1"], stdout=subprocess.PIPE)
+		stdout,stderr = p.communicate()
+		if p.returncode != 0:
+			continue
+		ping = stdout.decode("unicode_escape").splitlines()
+		if len(ping) < 6: #ping that i know prints 6 lines for -c 1
+			continue
+		ping,pingunit = ping[-1].split("=")[1].split("/")[1],ping[-1].split()[-1]  #how nice it is that python is dynamically typed
 
 		p = subprocess.Popen(["ssh", slave_connection_string, get_top_processes], stdout=subprocess.PIPE)
 		stdout,stderr = p.communicate()
@@ -96,7 +105,9 @@ def get_host_status():
 							"load" : system_load.replace(',', '.'),
 							"process_table" : [[field.replace(',', '.') for field in line.split()] for line in top_processes],
 							"processor_count" : processor_count,
-							"disk_usage" : [[field.replace(',', '.') for field in line.split()] for line in disk_usage]
+							"disk_usage" : [[field.replace(',', '.') for field in line.split()] for line in disk_usage],
+							"ping" : ping,
+							"pingunit" : pingunit
 						 } )
 	return all_hosts
 

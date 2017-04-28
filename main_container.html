@@ -27,9 +27,9 @@
 	{% if loop.index0 % 2 == 0 %}
 		<div class="row">
 	{% endif %}
-		{% if host.load|float > 4 %}
+		{% if host.load|float > (2 * host.processor_count|float)  %}
 			{% set host_state = 'danger' %}
-		{% elif host.load|float > 2 %}
+		{% elif host.load|float > (1 * host.processor_count|float) %}
 			{% set host_state = 'warning' %}
 		{% else %}
 			{% set host_state = 'success' %}
@@ -48,15 +48,23 @@
 								<span class=" text-{{ host_state }} ">{{ '%0.2f' % host.load|float }}</span>
 							</div>
 					</div>
+					<div class="row">
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+							<strong>Ping:</strong>
+						</div>
+							<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+								<span class=" text-{{ host_state }} ">{{ host.ping }} {{ host.pingunit }}</span>
+							</div>
+					</div>
 					<div class="row top_spacing">
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<strong>Partitions usage status:</strong>
 						</div>
 			  	</div>
 					{% for partition in host.disk_usage %}
-					{% if partition[1]|float > 80 %}
+					{% if partition[1]|float >= 95 %}
 						{% set partition_status = 'danger' %}
-					{% elif partition[1]|float > 50 %}
+					{% elif partition[1]|float >= 90 %}
 						{% set partition_status = 'warning' %}
 					{% else %}
 						{% set partition_status = 'success' %}
